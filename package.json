@@ -1,0 +1,23 @@
+{
+  "name": "backend-pat-cie-hugo-guillaume",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/2025-10-CDA-ECO-P6/backend-pat-cie-hugo-guillaume.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/2025-10-CDA-ECO-P6/backend-pat-cie-hugo-guillaume/issues"
+  },
+  "homepage": "https://github.com/2025-10-CDA-ECO-P6/backend-pat-cie-hugo-guillaume#readme"
+}
