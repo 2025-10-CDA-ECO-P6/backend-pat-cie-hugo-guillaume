@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model Proprietaire {
@@ -15,20 +14,24 @@ model Proprietaire {
   email     String   @unique
   adresse   String?
   animaux   Animal[]
+  
+  @@map("proprietaire") 
 }
 
 model Animal {
-  id              Int      @id @default(autoincrement())
-  nom             String
-  espece          String
-  race            String?
-  sexe            String?
-  date_naissance  DateTime?
-  poids           Decimal?
-  photo           String?
-  proprietaireId  Int
-  proprietaire    Proprietaire @relation(fields: [proprietaireId], references: [id])
-  visites         Visite[]
+  id             Int          @id @default(autoincrement())
+  nom            String
+  espece         String
+  race           String?
+  sexe           String?
+  date_naissance DateTime?    @map("date_naissance")
+  poids          Decimal?
+  photo          String?
+  proprietaireId Int          @map("proprietaire_id")
+  proprietaire   Proprietaire @relation(fields: [proprietaireId], references: [id])
+  visites        Visite[]
+
+  @@map("animal")
 }
 
 model Veterinaire {
@@ -39,19 +42,25 @@ model Veterinaire {
   telephone  String?
   email      String   @unique
   visites    Visite[]
+
+  @@map("veterinaire")
 }
 
 model Visite {
-  id             Int            @id @default(autoincrement())
-  date_visite    DateTime       @default(now())
-  compte_rendu   String?
-  motif          String?
-  animalId       Int
-  veterinaireId  Int
-  animal         Animal         @relation(fields: [animalId], references: [id])
-  veterinaire    Veterinaire    @relation(fields: [veterinaireId], references: [id])
-  vaccinations   EtreVaccine[]
-  prescriptions  Suivre[]
+  id            Int           @id @default(autoincrement())
+  date_visite   DateTime      @default(now()) @map("date_visite")
+  compte_rendu  String?       @map("compte_rendu")
+  motif         String?
+  
+  animalId      Int           @map("animal_id")
+  veterinaireId Int           @map("veterinaire_id")
+  
+  animal        Animal        @relation(fields: [animalId], references: [id])
+  veterinaire   Veterinaire   @relation(fields: [veterinaireId], references: [id])
+  vaccinations  EtreVaccine[]
+  prescriptions Suivre[]
+
+  @@map("visite")
 }
 
 model Vaccin {
@@ -59,22 +68,26 @@ model Vaccin {
   type                String?
   nom                 String
   description         String?
-  duree_validite_mois Int
+  duree_validite_mois Int           @map("duree_validite_mois")
   vaccinations        EtreVaccine[]
+
+  @@map("vaccin")
 }
 
 model EtreVaccine {
-  id               Int      @id @default(autoincrement())
-  date_vaccination DateTime @default(now())
-  date_rappel      DateTime?
-  statut           String?  @default("EFFECTUE")
+  id               Int       @id @default(autoincrement())
+  date_vaccination DateTime  @default(now()) @map("date_vaccination")
+  date_rappel      DateTime? @map("date_rappel")
+  statut           String?   @default("EFFECTUE")
   lot              String?
-  visiteId         Int
-  vaccinId         Int
-  visite           Visite   @relation(fields: [visiteId], references: [id])
-  vaccin           Vaccin   @relation(fields: [vaccinId], references: [id])
   
-  @@map("etre_vaccine") 
+  visiteId         Int       @map("visite_id")
+  vaccinId         Int       @map("vaccin_id")
+  
+  visite           Visite    @relation(fields: [visiteId], references: [id])
+  vaccin           Vaccin    @relation(fields: [vaccinId], references: [id])
+
+  @@map("etre_vaccine")
 }
 
 model Traitement {
@@ -83,15 +96,19 @@ model Traitement {
   dosage        String?
   frequence     String?
   prescriptions Suivre[]
+
+  @@map("traitement")
 }
 
 model Suivre {
-  id           Int      @id @default(autoincrement())
-  date_debut   DateTime
-  date_fin     DateTime?
+  id           Int        @id @default(autoincrement())
+  date_debut   DateTime   @map("date_debut")
+  date_fin     DateTime?  @map("date_fin")
   observation  String?
-  visiteId     Int
-  traitementId Int
+  
+  visiteId     Int        @map("visite_id")
+  traitementId Int        @map("traitement_id")
+  
   visite       Visite     @relation(fields: [visiteId], references: [id])
   traitement   Traitement @relation(fields: [traitementId], references: [id])
 
