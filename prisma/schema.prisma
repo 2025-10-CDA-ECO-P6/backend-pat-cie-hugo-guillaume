@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Proprietaire {
+  id        Int      @id @default(autoincrement())
+  nom       String
+  prenom    String
+  telephone String?
+  email     String   @unique
+  adresse   String?
+  animaux   Animal[]
+}
+
+model Animal {
+  id              Int      @id @default(autoincrement())
+  nom             String
+  espece          String
+  race            String?
+  sexe            String?
+  date_naissance  DateTime?
+  poids           Decimal?
+  photo           String?
+  proprietaireId  Int
+  proprietaire    Proprietaire @relation(fields: [proprietaireId], references: [id])
+  visites         Visite[]
+}
+
+model Veterinaire {
+  id         Int      @id @default(autoincrement())
+  nom        String
+  prenom     String
+  specialite String?
+  telephone  String?
+  email      String   @unique
+  visites    Visite[]
+}
+
+model Visite {
+  id             Int            @id @default(autoincrement())
+  date_visite    DateTime       @default(now())
+  compte_rendu   String?
+  motif          String?
+  animalId       Int
+  veterinaireId  Int
+  animal         Animal         @relation(fields: [animalId], references: [id])
+  veterinaire    Veterinaire    @relation(fields: [veterinaireId], references: [id])
+  vaccinations   EtreVaccine[]
+  prescriptions  Suivre[]
+}
+
+model Vaccin {
+  id                  Int           @id @default(autoincrement())
+  type                String?
+  nom                 String
+  description         String?
+  duree_validite_mois Int
+  vaccinations        EtreVaccine[]
+}
+
+model EtreVaccine {
+  id               Int      @id @default(autoincrement())
+  date_vaccination DateTime @default(now())
+  date_rappel      DateTime?
+  statut           String?  @default("EFFECTUE")
+  lot              String?
+  visiteId         Int
+  vaccinId         Int
+  visite           Visite   @relation(fields: [visiteId], references: [id])
+  vaccin           Vaccin   @relation(fields: [vaccinId], references: [id])
+  
+  @@map("etre_vaccine") 
+}
+
+model Traitement {
+  id            Int      @id @default(autoincrement())
+  nom           String
+  dosage        String?
+  frequence     String?
+  prescriptions Suivre[]
+}
+
+model Suivre {
+  id           Int      @id @default(autoincrement())
+  date_debut   DateTime
+  date_fin     DateTime?
+  observation  String?
+  visiteId     Int
+  traitementId Int
+  visite       Visite     @relation(fields: [visiteId], references: [id])
+  traitement   Traitement @relation(fields: [traitementId], references: [id])
+
+  @@map("suivre")
+}
