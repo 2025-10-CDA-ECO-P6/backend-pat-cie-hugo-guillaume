@@ -5,7 +5,16 @@ import { Prisma } from '@prisma/client';
 export const create = async (data: Prisma.AnimalCreateInput) => {
   return await prisma.animal.create({
     data,
-    include: { proprietaire: true } 
+    include: { utilisateur: {
+          select: {
+            id: true,
+            email: true,
+            nom: true,
+            prenom: true,
+            telephone: true,
+            adresse: true,
+          }
+        } } 
   });
 };
 
@@ -24,7 +33,18 @@ export const getAll = async (page: number, limit: number, search?: string) => {
       skip,
       take: limit,
       where,
-      include: { proprietaire: true },
+      include: { 
+        utilisateur: {
+          select: {
+            id: true,
+            email: true,
+            nom: true,
+            prenom: true,
+            telephone: true,
+            adresse: true,
+          }
+        }
+      },
       orderBy: { id: 'desc' }
     }),
     prisma.animal.count({ where })
@@ -36,7 +56,16 @@ export const getAll = async (page: number, limit: number, search?: string) => {
 export const getById = async (id: number) => {
   return await prisma.animal.findUnique({
     where: { id },
-    include: { proprietaire: true, visites: true } 
+    include: { utilisateur: {
+          select: {
+            id: true,
+            email: true,
+            nom: true,
+            prenom: true,
+            telephone: true,
+            adresse: true,
+          }
+        }, visites: true } 
   });
 };
 
@@ -44,7 +73,16 @@ export const update = async (id: number, data: Prisma.AnimalUpdateInput) => {
   return await prisma.animal.update({
     where: { id },
     data,
-    include: { proprietaire: true }
+    include: { utilisateur: {
+          select: {
+            id: true,
+            email: true,
+            nom: true,
+            prenom: true,
+            telephone: true,
+            adresse: true,
+          }
+        } }
   });
 };
 
