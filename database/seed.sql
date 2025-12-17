@@ -1,35 +1,28 @@
--- Données tests
+INSERT INTO "vaccin" ("nom", "type", "duree_validite_mois", "description") VALUES
+('Rage', 'Virus', 12, 'Obligatoire pour voyager'),
+('Typhus', 'Virus', 12, 'Essentiel pour les chats'),
+('Leucose', 'Virus', 12, 'Recommandé pour les chats sortants'),
+('CHPPi', 'Cocktail', 12, 'Carré, Hépatite, Parvovirose pour chiens');
 
-INSERT INTO proprietaire (nom, prenom, telephone, email, adresse) VALUES
-('Dupont', 'Jean', '0601020304', 'jean.dupont@email.com', '10 rue de la Paix, Paris'),
-('Martin', 'Sophie', '0699887766', 'sophie.martin@email.com', '5 avenue des Champs, Lyon');
-
-INSERT INTO veterinaire (nom, prenom, specialite, telephone, email) VALUES
-('Curie', 'Marie', 'Chirurgie', '0123456789', 'dr.curie@vet.com'),
-('Pasteur', 'Louis', 'Infectiologie', '0987654321', 'dr.pasteur@vet.com');
-
-INSERT INTO animal (nom, espece, race, sexe, date_naissance, poids, proprietaire_id) VALUES
-('Rex', 'Chien', 'Berger Allemand', 'M', '2020-05-15', 32.5, 1),
-('Mina', 'Chat', 'Siamois', 'F', '2021-08-20', 4.2, 1),
-('Bugs', 'Lapin', 'Nain', 'M', '2022-01-10', 1.5, 2);
-
-INSERT INTO vaccin (type, nom, description, duree_validite_mois) VALUES
-('Virus', 'Rabisin', 'Rage', 12),
-('Virus', 'Leucogen', 'Leucose féline', 12),
-('Bactérie', 'Pneumodog', 'Toux du chenil', 12);
-
-INSERT INTO traitement (nom, dosage, frequence) VALUES
+INSERT INTO "traitement" ("nom", "dosage", "frequence") VALUES
 ('Amoxicilline', '200mg', 'Matin et Soir'),
-('Metacam', '1.5mg', 'Une fois par jour');
+('Metacam', '1.5mg', 'Une fois par jour'),
+('Vermifuge Drontal', '1 comprimé', 'Une seule prise');
 
-INSERT INTO visite (date_visite, motif, compte_rendu, animal_id, veterinaire_id) VALUES
-('2023-10-01', 'Vaccination annuelle', 'Animal en bonne santé', 1, 1);
+INSERT INTO "utilisateur" ("email", "mot_de_passe", "role", "nom", "prenom", "specialite", "adresse") 
+VALUES ('veto@pattecie.com', '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6LrahZCp3.Tl1I3y', 'VETERINAIRE', 'House', 'Gregory', 'Chirurgie', 'Clinique Princeton');
 
-INSERT INTO etre_vaccine (date_vaccination, date_rappel, statut, lot, visite_id, vaccin_id) VALUES
-('2023-10-01', '2024-10-01', 'EFFECTUE', 'LOT-A123', 1, 1);
+INSERT INTO "utilisateur" ("email", "mot_de_passe", "role", "nom", "prenom", "telephone", "adresse") 
+VALUES ('proprio@gmail.com', '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6LrahZCp3.Tl1I3y', 'PROPRIETAIRE', 'Michu', 'Germaine', '0606060606', '12 rue des Fleurs');
 
-INSERT INTO visite (date_visite, motif, compte_rendu, animal_id, veterinaire_id) VALUES
-('2023-11-15', 'Toux persistante', 'Infection respiratoire légère', 2, 2);
+INSERT INTO "animal" ("nom", "espece", "race", "sexe", "date_naissance", "poids", "utilisateur_id")
+VALUES ('Rex', 'Chien', 'Berger Allemand', 'M', '2020-05-15', 32.5, 2);
 
-INSERT INTO suivre (date_debut, date_fin, observation, visite_id, traitement_id) VALUES
-('2023-11-15', '2023-11-22', 'Bien surveiller la prise alimentaire', 2, 1);
+INSERT INTO "visite" ("date_", "motif", "compte_rendu", "animal_id", "veterinaire_id")
+VALUES (NOW(), 'Consultation annuelle', 'Animal en bonne santé. Vaccination effectuée.', 1, 1);
+
+INSERT INTO "etre_vaccine" ("visite_id", "vaccin_id", "date_rappel", "lot")
+VALUES (1, 1, NOW() + INTERVAL '1 year', 'LOT-A452');
+
+INSERT INTO "suivre" ("visite_id", "traitement_id", "date_debut", "observation")
+VALUES (1, 3, NOW(), 'A donner ce soir dans la gamelle');
