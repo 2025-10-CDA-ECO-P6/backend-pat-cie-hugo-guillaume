@@ -15,26 +15,26 @@
 - [x] DELETE /animal/:id
 
 ### Propriétaires
-- [ ] GET /proprietaires (Liste + Recherche par nom)
-- [ ] GET /proprietaires/:id (Détails + Liste des animaux associés)
-- [ ] POST /proprietaires (Création)
-- [ ] PUT /proprietaires/:id
-- [ ] DELETE /proprietaires/:id
+- [X] GET /proprietaires (Liste + Recherche par nom)
+- [X] GET /proprietaires/:id (Détails + Liste des animaux associés)
+- [X] POST /proprietaires (Création)
+- [X] PUT /proprietaires/:id
+- [X] DELETE /proprietaires/:id
 
 ### Vétérinaires
-- [ ] GET /veterinaires
-- [ ] POST /veterinaires
-- [ ] PUT /veterinaires/:id
-- [ ] DELETE /veterinaires/:id
+- [X] GET /veterinaires
+- [X] POST /veterinaires
+- [X] PUT /veterinaires/:id
+- [X] DELETE /veterinaires/:id
 
 ### Visites (Cœur du métier)
-- [ ] POST /visites (Créer une visite liée à un Animal et un Vétérinaire)
-- [ ] GET /visites/animal/:animalId (Historique médical d'un animal)
-- [ ] GET /visites/:id (Détails complets)
+- [X] POST /visites (Créer une visite liée à un Animal et un Vétérinaire)
+- [X] GET /visites/animal/:animalId (Historique médical d'un animal)
+- [X] GET /visites/:id (Détails complets)
 
 ### Soins (Vaccins & Traitements)
-- [ ] CRUD simple pour la table de référence `Vaccin` (Types de vaccins disponibles)
-- [ ] CRUD simple pour la table de référence `Traitement` (Types de médicaments)
+- [X] CRUD simple pour la table de référence `Vaccin` (Types de vaccins disponibles)
+- [X] CRUD simple pour la table de référence `Traitement` (Types de médicaments)
 
 ## 3. Sécurité & Qualité
 - [ ] **Validation :** Implémenter Zod dans les contrôleurs pour valider les `req.body`
