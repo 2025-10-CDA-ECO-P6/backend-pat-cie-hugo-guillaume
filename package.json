@@ -10,7 +10,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/app.js",
-    "dev": "npx prisma generate && tsx swagger-gen.ts && nodemon --watch src --exec tsx src/app.ts"
+    "dev": "npx prisma db pull && npx prisma generate && tsx swagger-gen.ts && nodemon --watch src --exec tsx src/app.ts"
   },
   "repository": {
     "type": "git",
