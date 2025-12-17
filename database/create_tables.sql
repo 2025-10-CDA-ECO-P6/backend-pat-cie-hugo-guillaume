@@ -1,92 +1,89 @@
--- Clean si des trucs existent déjà
-DROP TABLE IF EXISTS suivre CASCADE;
-DROP TABLE IF EXISTS etre_vaccine CASCADE;
-DROP TABLE IF EXISTS visite CASCADE;
-DROP TABLE IF EXISTS animal CASCADE;
-DROP TABLE IF EXISTS proprietaire CASCADE;
-DROP TABLE IF EXISTS veterinaire CASCADE;
-DROP TABLE IF EXISTS vaccin CASCADE;
-DROP TABLE IF EXISTS traitement CASCADE;
+DROP TABLE IF EXISTS "suivre" CASCADE;
+DROP TABLE IF EXISTS "etre_vaccine" CASCADE;
+DROP TABLE IF EXISTS "visite" CASCADE;
+DROP TABLE IF EXISTS "animal" CASCADE;
+DROP TABLE IF EXISTS "utilisateur" CASCADE;
+DROP TABLE IF EXISTS "vaccin" CASCADE;
+DROP TABLE IF EXISTS "traitement" CASCADE;
+DROP TABLE IF EXISTS "proprietaire" CASCADE;
+DROP TABLE IF EXISTS "veterinaire" CASCADE;
+DROP TYPE IF EXISTS "Role";
 
--- Creation tables
+CREATE TYPE "Role" AS ENUM ('ADMIN', 'VETERINAIRE', 'PROPRIETAIRE');
 
-CREATE TABLE proprietaire (
-    id SERIAL PRIMARY KEY,
-    nom VARCHAR(100) NOT NULL,
-    prenom VARCHAR(100) NOT NULL,
-    telephone VARCHAR(20),
-    email VARCHAR(150) UNIQUE NOT NULL,
-    adresse TEXT
+CREATE TABLE "utilisateur" (
+    "id" SERIAL PRIMARY KEY,
+    "email" TEXT NOT NULL UNIQUE,
+    "mot_de_passe" TEXT NOT NULL,
+    "role" "Role" NOT NULL DEFAULT 'PROPRIETAIRE',
+    "nom" TEXT NOT NULL,
+    "prenom" TEXT NOT NULL,
+    "telephone" TEXT,
+    "adresse" TEXT,
+    "specialite" TEXT,
+    "creation" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "actif" BOOLEAN NOT NULL DEFAULT true
 );
 
-CREATE TABLE veterinaire (
-    id SERIAL PRIMARY KEY,
-    nom VARCHAR(100) NOT NULL,
-    prenom VARCHAR(100) NOT NULL,
-    specialite VARCHAR(100),
-    telephone VARCHAR(20),
-    email VARCHAR(150) UNIQUE NOT NULL
+CREATE TABLE "animal" (
+    "id" SERIAL PRIMARY KEY,
+    "nom" TEXT NOT NULL,
+    "espece" TEXT NOT NULL,
+    "race" TEXT,
+    "sexe" TEXT,
+    "date_naissance" TIMESTAMP(3),
+    "poids" DECIMAL(65,30),
+    "photo" TEXT,
+    "utilisateur_id" INTEGER NOT NULL,
+    CONSTRAINT "animal_utilisateur_fkey" FOREIGN KEY ("utilisateur_id") REFERENCES "utilisateur"("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
-CREATE TABLE animal (
-    id SERIAL PRIMARY KEY,
-    nom VARCHAR(100) NOT NULL,
-    espece VARCHAR(50) NOT NULL,
-    race VARCHAR(50),
-    sexe CHAR(1) CHECK (sexe IN ('M', 'F')),
-    date_naissance DATE,
-    poids DECIMAL(5,2),
-    photo TEXT, 
-    proprietaire_id INT NOT NULL, 
-    CONSTRAINT fk_animal_proprietaire FOREIGN KEY (proprietaire_id) REFERENCES proprietaire(id) ON DELETE CASCADE
+CREATE TABLE "visite" (
+    "id" SERIAL PRIMARY KEY,
+    "date_" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "compte_rendu" TEXT,
+    "motif" TEXT,
+    "animal_id" INTEGER NOT NULL,
+    "veterinaire_id" INTEGER NOT NULL,
+    CONSTRAINT "visite_animal_fkey" FOREIGN KEY ("animal_id") REFERENCES "animal"("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "visite_veterinaire_fkey" FOREIGN KEY ("veterinaire_id") REFERENCES "utilisateur"("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
-CREATE TABLE visite (
-    id SERIAL PRIMARY KEY,
-    date_visite DATE NOT NULL DEFAULT CURRENT_DATE,
-    compte_rendu TEXT,
-    motif VARCHAR(200),
-    animal_id INT NOT NULL,     
-    veterinaire_id INT NOT NULL, 
-    CONSTRAINT fk_visite_animal FOREIGN KEY (animal_id) REFERENCES animal(id) ON DELETE CASCADE,
-    CONSTRAINT fk_visite_vet FOREIGN KEY (veterinaire_id) REFERENCES veterinaire(id) ON DELETE SET NULL
+CREATE TABLE "vaccin" (
+    "id" SERIAL PRIMARY KEY,
+    "type" TEXT,
+    "nom" TEXT NOT NULL,
+    "description" TEXT,
+    "duree_validite_mois" INTEGER NOT NULL
 );
 
-CREATE TABLE vaccin (
-    id SERIAL PRIMARY KEY,
-    type VARCHAR(50),
-    nom VARCHAR(100) NOT NULL,
-    description TEXT,
-    duree_validite_mois INT NOT NULL
+CREATE TABLE "traitement" (
+    "id" SERIAL PRIMARY KEY,
+    "nom" TEXT NOT NULL,
+    "dosage" TEXT,
+    "frequence" TEXT
 );
 
---  Lien Visite <-> Vaccin)
-CREATE TABLE etre_vaccine (
-    id SERIAL PRIMARY KEY,
-    date_vaccination DATE NOT NULL DEFAULT CURRENT_DATE,
-    date_rappel DATE,
-    statut VARCHAR(50) DEFAULT 'EFFECTUE', 
-    lot VARCHAR(50),
-    visite_id INT NOT NULL, 
-    vaccin_id INT NOT NULL, 
-    CONSTRAINT fk_ev_visite FOREIGN KEY (visite_id) REFERENCES visite(id) ON DELETE CASCADE,
-    CONSTRAINT fk_ev_vaccin FOREIGN KEY (vaccin_id) REFERENCES vaccin(id) ON DELETE RESTRICT
+CREATE TABLE "etre_vaccine" (
+    "id" SERIAL PRIMARY KEY,
+    "date_vaccination" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "date_rappel" TIMESTAMP(3),
+    "statut" TEXT DEFAULT 'EFFECTUE',
+    "lot" TEXT,
+    "visite_id" INTEGER NOT NULL,
+    "vaccin_id" INTEGER NOT NULL,
+    CONSTRAINT "etre_vaccine_visite_fkey" FOREIGN KEY ("visite_id") REFERENCES "visite"("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "etre_vaccine_vaccin_fkey" FOREIGN KEY ("vaccin_id") REFERENCES "vaccin"("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
-CREATE TABLE traitement (
-    id SERIAL PRIMARY KEY,
-    nom VARCHAR(100) NOT NULL,
-    dosage VARCHAR(100),
-    frequence VARCHAR(100)
+CREATE TABLE "suivre" (
+    "id" SERIAL PRIMARY KEY,
+    "date_debut" TIMESTAMP(3) NOT NULL,
+    "date_fin" TIMESTAMP(3),
+    "observation" TEXT,
+    "visite_id" INTEGER NOT NULL,
+    "traitement_id" INTEGER NOT NULL,
+    CONSTRAINT "suivre_visite_fkey" FOREIGN KEY ("visite_id") REFERENCES "visite"("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "suivre_traitement_fkey" FOREIGN KEY ("traitement_id") REFERENCES "traitement"("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
-CREATE TABLE suivre (
-    id SERIAL PRIMARY KEY,
-    date_debut DATE NOT NULL,
-    date_fin DATE,
-    observation TEXT,
-    visite_id INT NOT NULL,
-    traitement_id INT NOT NULL, 
-    CONSTRAINT fk_suivre_visite FOREIGN KEY (visite_id) REFERENCES visite(id) ON DELETE CASCADE,
-    CONSTRAINT fk_suivre_traitement FOREIGN KEY (traitement_id) REFERENCES traitement(id) ON DELETE RESTRICT
-);
