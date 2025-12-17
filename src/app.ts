@@ -7,14 +7,17 @@ const require = createRequire(import.meta.url);
 const swaggerFile = require("./swagger-output.json");
 import 'dotenv/config';
 import swaggerUi from 'swagger-ui-express';
-
+import authRoutes from './routes/auth.routes';
+import { authenticateToken } from './middleware/auth.middleware';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
 
-app.use('/api', router);
+app.use('/api/auth', authRoutes);
+
+app.use('/api', authenticateToken, router);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 
