@@ -65,7 +65,7 @@ export const getById = async (id: number) => {
             telephone: true,
             adresse: true,
           }
-        }, visites: true } 
+        }, visite: true } 
   });
 };
 

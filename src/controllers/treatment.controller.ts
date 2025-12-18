@@ -3,6 +3,12 @@ import * as service from '../services/treatment.service';
 
 export const getAll = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const role = req.user?.role;
+    if (role !== 'VETERINAIRE') {
+      res.status(401);
+      return;
+    }
+    
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;
     const search = req.query.search as string;
@@ -18,7 +24,7 @@ export const getOne = async (req: Request, res: Response, next: NextFunction) =>
   try {
     const id = Number(req.params.id);
     const treatment = await service.getById(id);
-    
+
     if (!treatment) {
       res.status(404).json({ error: "Traitement non trouvé" });
       return;
@@ -31,6 +37,11 @@ export const getOne = async (req: Request, res: Response, next: NextFunction) =>
 
 export const create = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const role = req.user?.role;
+    if (role !== 'VETERINAIRE') {
+      res.status(401);
+      return;
+    }
     const newTreatment = await service.create(req.body);
     res.status(201).json(newTreatment);
   } catch (error) {
@@ -40,6 +51,11 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 
 export const update = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const role = req.user?.role;
+    if (role !== 'VETERINAIRE') {
+      res.status(401);
+      return;
+    }
     const id = Number(req.params.id);
     const updatedTreatment = await service.update(id, req.body);
     res.json(updatedTreatment);
@@ -50,6 +66,11 @@ export const update = async (req: Request, res: Response, next: NextFunction) =>
 
 export const remove = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const role = req.user?.role;
+    if (role !== 'VETERINAIRE') {
+      res.status(401);
+      return;
+    }
     const id = Number(req.params.id);
     await service.remove(id);
     res.status(204).send();
