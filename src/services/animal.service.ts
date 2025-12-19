@@ -1,93 +1,105 @@
-import prisma from '../prismaClient';
-import { Prisma } from '@prisma/client';
+import { prisma } from '../prismaClient';
 
-
-export const create = async (data: Prisma.AnimalCreateInput) => {
-  return await prisma.animal.create({
-    data,
-    include: { utilisateur: {
-          select: {
-            id: true,
-            email: true,
-            nom: true,
-            prenom: true,
-            telephone: true,
-            adresse: true,
-          }
-        } } 
-  });
+const userPublicFields = {
+  nom: true,
+  prenom: true,
+  email: true,
+  telephone: true,
+  adresse: true
 };
 
 export const getAll = async (page: number, limit: number, search?: string) => {
   const skip = (page - 1) * limit;
-  
-  const where: Prisma.AnimalWhereInput = search ? {
-    OR: [
-      { nom: { contains: search, mode: 'insensitive' } },
-      { espece: { contains: search, mode: 'insensitive' } }
-    ]
-  } : {};
 
-  const [data, total] = await Promise.all([
-    prisma.animal.findMany({
-      skip,
-      take: limit,
-      where,
-      include: { 
-        utilisateur: {
-          select: {
-            id: true,
-            email: true,
-            nom: true,
-            prenom: true,
-            telephone: true,
-            adresse: true,
-          }
-        }
+  const whereClause = search
+    ? {
+        OR: [
+          { nom: { contains: search, mode: 'insensitive' as const } },
+          { espece: { contains: search, mode: 'insensitive' as const } },
+        ],
+      }
+    : {};
+
+  const animals = await prisma.animal.findMany({
+    skip,
+    take: limit,
+    where: whereClause,
+    include: {
+      utilisateur: {
+        select: userPublicFields
       },
-      orderBy: { id: 'desc' }
-    }),
-    prisma.animal.count({ where })
-  ]);
+      visite: {
+        include: {
+            utilisateur: {
+                select: userPublicFields
+            }
+        }
+      }, 
+    },
+    orderBy: { date_naissance: 'desc' },
+  });
 
-  return { data, total, page, limit, totalPages: Math.ceil(total / limit) };
+  const total = await prisma.animal.count({ where: whereClause });
+
+  return {
+    data: animals,
+    meta: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
 };
 
 export const getById = async (id: number) => {
-  return await prisma.animal.findUnique({
+  const animal = await prisma.animal.findUnique({
     where: { id },
-    include: { utilisateur: {
-          select: {
-            id: true,
-            email: true,
-            nom: true,
-            prenom: true,
-            telephone: true,
-            adresse: true,
-          }
-        }, visite: true } 
+    include: {
+      utilisateur: {
+        select: userPublicFields
+      },
+      visite: {
+        include: {
+            utilisateur: {
+                select: userPublicFields
+            }
+        }
+      }
+    },
+  });
+
+  if (animal) {
+    return {
+      ...animal,
+      ownerId: animal.utilisateurId 
+    };
+  }
+  
+  return null;
+};
+
+export const create = async (data: any) => {
+  return await prisma.animal.create({
+    data: {
+      ...data,
+      date_naissance: data.date_naissance ? new Date(data.date_naissance) : undefined,
+    },
   });
 };
 
-export const update = async (id: number, data: Prisma.AnimalUpdateInput) => {
+export const update = async (id: number, data: any) => {
   return await prisma.animal.update({
     where: { id },
-    data,
-    include: { utilisateur: {
-          select: {
-            id: true,
-            email: true,
-            nom: true,
-            prenom: true,
-            telephone: true,
-            adresse: true,
-          }
-        } }
+    data: {
+      ...data,
+      date_naissance: data.date_naissance ? new Date(data.date_naissance) : undefined,
+    },
   });
 };
 
 export const remove = async (id: number) => {
   return await prisma.animal.delete({
-    where: { id }
+    where: { id },
   });
 };

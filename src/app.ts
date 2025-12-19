@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import router from './routes/index'; // Assure-toi que le chemin est bon
+import router from './routes/index'; 
 import { vaccineReminderJob } from './jobs/vaccineReminder';
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
@@ -11,6 +11,7 @@ import authRoutes from './routes/auth.routes';
 import { authenticateToken } from './middleware/auth.middleware';
 const app = express();
 const PORT = process.env.PORT || 3000;
+
 
 app.use(cors());
 app.use(express.json());
@@ -28,7 +29,7 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 
 vaccineReminderJob.start();
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`\n Serveur démarré avec succès !`);
   console.log(`➜  API URL :   http://localhost:${PORT}/api`);
   console.log(`➜  Swagger :   http://localhost:${PORT}/api-docs`);
