@@ -24,6 +24,8 @@
   },
   "homepage": "https://github.com/2025-10-CDA-ECO-P6/backend-pat-cie-hugo-guillaume#readme",
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
+    "@prisma/adapter-neon": "^7.2.0",
     "@prisma/adapter-pg": "^7.1.0",
     "@prisma/client": "^7.1.0",
     "@prisma/config": "^7.1.0",
@@ -38,6 +40,7 @@
     "swagger-autogen": "^2.23.7",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
+    "ws": "^8.18.3",
     "zod": "^4.2.1"
   },
   "devDependencies": {
@@ -50,6 +53,7 @@
     "@types/pg": "^8.16.0",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
+    "@types/ws": "^8.18.1",
     "nodemon": "^3.1.11",
     "prisma": "^7.1.0",
     "tsx": "^4.21.0",
