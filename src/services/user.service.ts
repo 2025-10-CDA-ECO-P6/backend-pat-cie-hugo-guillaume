@@ -56,8 +56,8 @@ export const getAll = async (page: number, limit: number, search?: string, role?
         mot_de_passe: false,
         _count: {
           select: {
-            animaux: true,
-            visites_veterinaire: true
+            animal: true,
+            visite: true
           }
         }
       },
@@ -84,7 +84,7 @@ export const getById = async (id: number) => {
       creation: true,
       actif: true,
       mot_de_passe: false,
-      animaux: {
+      animal: {
         select: {
           id: true,
           nom: true,
@@ -93,7 +93,7 @@ export const getById = async (id: number) => {
           date_naissance: true
         }
       },
-      visites_veterinaire: {
+      visite: {
         take: 10,
         orderBy: { date_: 'desc' },
         select: {
@@ -110,8 +110,8 @@ export const getById = async (id: number) => {
       },
       _count: {
         select: {
-          animaux: true,
-          visites_veterinaire: true
+          animal: true,
+          visite: true
         }
       }
     }

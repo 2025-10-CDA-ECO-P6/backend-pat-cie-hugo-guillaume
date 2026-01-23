@@ -4,10 +4,7 @@ import * as service from '../services/animal.service';
 export const getAll = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const role = req.user?.role;
-    if (role !== 'VETERINAIRE') {
-      res.status(401);
-      return;
-    }
+
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;
     const search = req.query.search as string;
