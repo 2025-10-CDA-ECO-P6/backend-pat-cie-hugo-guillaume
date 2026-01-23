@@ -37,20 +37,20 @@
 - [X] CRUD simple pour la table de référence `Traitement` (Types de médicaments)
 
 ## 3. Sécurité & Qualité
-- [ ] **Validation :** Implémenter Zod dans les contrôleurs pour valider les `req.body`
-- [ ] **Auth :** Mettre en place un Middleware d'authentification simple (Header `x-api-key` ou Bearer Token statique)
-- [ ] **Gestion d'erreurs :** Vérifier que le middleware global capture bien les erreurs Prisma
+- [X] **Validation :** Implémenter Zod dans les contrôleurs pour valider les `req.body`
+- [X] **Auth :** Mettre en place un Middleware d'authentification simple (Header `x-api-key` ou Bearer Token statique)
+- [X] **Gestion d'erreurs :** Vérifier que le middleware global capture bien les erreurs Prisma
 
 ## 4. Tâches Planifiées (Cron Job)
 - [x] Structure du Cron Job (`src/jobs/vaccineReminder.ts`)
-- [ ] **Logique :** Implémenter l'envoi réel d'email ou simulé
-- [ ] **Mise à jour :** Passer le statut du vaccin à "RAPPEL_ENVOYE" une fois le mail parti
+- [X] **Logique :** Implémenter l'envoi réel d'email ou simulé
+- [X] **Mise à jour :** Passer le statut du vaccin à "RAPPEL_ENVOYE" une fois le mail parti
 
 ## 5. Documentation
 - [x] Configurer Swagger UI + Création automatique de la doc swagger
 
 ## 6. Déploiement (Render)
-- [ ] Pousser le code final sur GitHub
-- [ ] Créer le projet "Web Service" sur Render
-- [ ] Ajouter les variables d'environnement sur Render (`DATABASE_URL`, `API_KEY`, etc.)
-- [ ] Vérifier que le serveur démarre et que Swagger est accessible en ligne
+- [X] Pousser le code final sur GitHub
+- [X] Créer le projet "Web Service" sur Render
+- [X] Ajouter les variables d'environnement sur Render (`DATABASE_URL`, `API_KEY`, etc.)
+- [X] Vérifier que le serveur démarre et que Swagger est accessible en ligne
